@@ -1,0 +1,24 @@
+x-common-python: &common-python
+  build:
+    context: .
+    target: python-image
+  volumes:
+    - app:/app
+
+services:
+  backend:
+    <<: *common-python
+    ports:
+      - "8000:8000"
+  migrate:
+    <<: *common-python
+    command: ["uv", "run", "nanodjango", "manage", "app.py", "migrate"]
+  frontend:
+    build:
+      context: .
+      target: node-image
+    ports:
+      - "3000:3000"
+
+volumes:
+  app:
